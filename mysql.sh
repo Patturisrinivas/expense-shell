@@ -22,7 +22,7 @@ VALIDATE(){
 }
 
 CHECK_ROOT(){
-    if [ $USERID -ne     0 ]
+    if [ $USERID -ne 0 ]
     then 
         echo "Error:: You must have sudo access to excute this script"
         exit 1 #other than 0
@@ -33,10 +33,10 @@ echo "Script started executing at: $TIMESTAMP" &>>$LOG_FILE_NAME
 
 CHECK_ROOT 
 
-dnf install mysql-server -y  &>>$LOG_FILE_NAME
+dnf install mysql-server -y &>>$LOG_FILE_NAME
 VALIDATE $? "installing MySQL Server"
 
-systemctl enable mysqld  &>>$LOG_FILE_NAME
+systemctl enable mysqld &>>$LOG_FILE_NAME
 VALIDATE $? "Enabling MYSQL server"
 
 systemctl start mysqld &>>$LOG_FILE_NAME
@@ -47,7 +47,7 @@ mysql -h mysql.10cloud.tech -u root -pExpenseApp@1 -e 'show databases;' &>>$LOG_
 if [ $? -ne 0 ]
 then 
     echo "MySQL Root password not setup" &>>$LOG_FILE_NAME
-    mysql_secure_installation --set-root-pass ExpenseApp@
+    mysql_secure_installation --set-root-pass ExpenseApp@1
     VALIDATE $? "setting root Password"
 else
     echo -e "MySQL Root password already setup ... $Y SKIPPING $N"
