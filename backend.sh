@@ -75,7 +75,7 @@ dnf install mysql -y &>>$LOG_FILE_NAME
 VALIDATE $? "installing mysql client"
 
 mysql -h mysql.10cloud.tech -uroot -pExpenseApp@1 < /app/schema/backend.sql &>>$LOG_FILE_NAME
-VALIDATE $? "Setting up the Transactions scema and tables"
+VALIDATE $? "Setting up the transactions scema and tables"
 
 systemctl daemon-reload &>>$LOG_FILE_NAME
 VALIDATE $? "daemon reload"
@@ -83,5 +83,5 @@ VALIDATE $? "daemon reload"
 systemctl enable backend &>>$LOG_FILE_NAME
 VALIDATE $? "Enabling backend"
 
-systemctl start backend &>>$LOG_FILE_NAME
+systemctl restart backend &>>$LOG_FILE_NAME
 VALIDATE $? "Starting the backend"
