@@ -85,11 +85,3 @@ VALIDATE $? "Enabling backend"
 
 systemctl start backend &>>$LOG_FILE_NAME
 VALIDATE $? "Starting the backend"
-
-if [ $? -ne 0 ]
-then 
-    echo "useradd expense" &>>$LOG_FILE_NAME
-    VALIDATE $? "useradd expense"
-else
-    echo -e "useradd expense already created ... $Y SKIPPING $N"
-fi
