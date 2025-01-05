@@ -22,41 +22,40 @@ VALIDATE(){
 }
 
 CHECK_ROOT(){
-    if [ $USERID -ne     0 ]
-    then 
-        echo "Error:: You must have sudo access to excute this script"
+    if [ $USERID -ne 0 ]
+    then
+        echo "ERROR:: You must have sudo access to execute this script"
         exit 1 #other than 0
     fi
 }
 
 echo "Script started executing at: $TIMESTAMP" &>>$LOG_FILE_NAME
 
-CHECK_ROOT 
+CHECK_ROOT
 
 dnf module disable nodejs -y &>>$LOG_FILE_NAME
-VALIDATE $? "Disabling existing default Nodejs"
+VALIDATE $? "Disabling existing default NodeJS"
 
 dnf module enable nodejs:20 -y &>>$LOG_FILE_NAME
-VALIDATE $? "Enabling Nodejs 20"
+VALIDATE $? "Enabling NodeJS 20"
 
 dnf install nodejs -y &>>$LOG_FILE_NAME
-VALIDATE $? "installing nodejs"
+VALIDATE $? "Installing NodeJS"
 
-id expense&>>$LOG_FILE_NAME
+id expense &>>$LOG_FILE_NAME
 if [ $? -ne 0 ]
 then
     useradd expense &>>$LOG_FILE_NAME
-    VALIDATE $? "Adding Expense User"
+    VALIDATE $? "Adding expense user"
 else
-    echo -e "expense user already exist... $Y SKIPPING $N"
+    echo -e "expense user already exists ... $Y SKIPPING $N"
 fi
 
-
 mkdir -p /app &>>$LOG_FILE_NAME
-VALIDATE $? "creating a app directory"
+VALIDATE $? "Creating app directory"
 
 curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip &>>$LOG_FILE_NAME
-VALIDATE $? "downloading backend"
+VALIDATE $? "Downloading backend"
 
 cd /app
 rm -rf /app/*
@@ -65,23 +64,23 @@ unzip /tmp/backend.zip &>>$LOG_FILE_NAME
 VALIDATE $? "unzip backend"
 
 npm install &>>$LOG_FILE_NAME
-VALIDATE $? "installing dependencies"
+VALIDATE $? "Installing dependencies"
 
-cp /home/ec2-user/expense-shell/backend.servece /etc/systemd/system/backend.service
+cp /home/ec2-user/expense-shell/backend.service /etc/systemd/system/backend.service
 
-#prepare MySQL schema
+# Prepare MySQL Schema
 
 dnf install mysql -y &>>$LOG_FILE_NAME
-VALIDATE $? "installing mysql client"
+VALIDATE $? "Installing MySQL Client"
 
 mysql -h mysql.10cloud.tech -uroot -pExpenseApp@1 < /app/schema/backend.sql &>>$LOG_FILE_NAME
-VALIDATE $? "Setting up the transactions scema and tables"
+VALIDATE $? "Setting up the transactions schema and tables"
 
 systemctl daemon-reload &>>$LOG_FILE_NAME
-VALIDATE $? "daemon reload"
+VALIDATE $? "Daemon Reload"
 
 systemctl enable backend &>>$LOG_FILE_NAME
 VALIDATE $? "Enabling backend"
 
 systemctl restart backend &>>$LOG_FILE_NAME
-VALIDATE $? "Starting the backend"
+VALIDATE $? "Starting Backend"
