@@ -21,8 +21,8 @@ VALIDATE(){
     fi
 }
 
-CHECK-ROOT(){
-    if [ $USERID -ne 0 ]
+CHECK_ROOT(){
+    if [ $USERID -ne     0 ]
     then 
         echo "Error:: You must have sudo access to excute this script"
         exit 1 #other than 0
@@ -31,7 +31,7 @@ CHECK-ROOT(){
 
 echo "Script started executing at: $TIMESTAMP" &>>$LOG_FILE_NAME
 
-CHECK-ROOT 
+CHECK_ROOT 
 
 dnf install mysql-server -y  &>>$LOG_FILE_NAME
 VALIDATE $? "installing MySQL Server"
